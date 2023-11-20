@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\RekapContoller;
 use App\Http\Controllers\TamuController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
+|-----------------------------------------------        ---------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
@@ -34,9 +37,18 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/tamu/create', [TamuController::class, 'create'])->name('tamu.create');
         Route::post('/tamu/create', [TamuController::class, 'store'])->name('tamu.store');
         Route::get('/tamu', [TamuController::class, 'index'])->name('tamu.index');
-        Route::post('/update-status/{id}', [TamuController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/updateStatus/{id}', [TamuController::class, 'updateStatus'])->name('updateStatus');
         Route::get('/tamu/{id}/edit', [TamuController::class, 'edit'])->name('tamu.edit');
         Route::put('/tamu/{id}', [TamuController::class, 'update'])->name('tamu.update');
         Route::delete('/tamu/{id}', [TamuController::class, 'destroy'])->name('tamu.destroy');
         Route::get('logout', [PenggunaController::class, 'logout'])->name('logout.index');
+
+        // Rekap Tamu 
+        Route::get('/rekap-tamu', [RekapContoller::class, 'index'])->name('rekap.index');
+        Route::get('/getData', [RekapContoller::class, 'getData'])->name('getData');
+
+        /// Rekap PDF
+        Route::get('/export-pdf', [PDFController::class, 'exportPDF'])->name('exportPDF');
+        Route::get('/export', [ExcelController::class, 'export'])->name('export');
+
 });

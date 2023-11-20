@@ -14,7 +14,8 @@
             <h4 class="card-title">Data Tamu</h4>
             <hr>
             <div class="table-responsive">
-                <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Tambah</a>
+                <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i
+                        class="bi bi-plus-circle me-1"></i>Tambah</a>
                 <table id="tableTamu" class="table table-hover">
                     <thead>
                         <tr>
@@ -50,11 +51,7 @@
                                 <td>{{ $data->jam_masuk }}</td>
                                 <td id="jamKeluarField">{{ $data->jam_keluar }}</td>
                                 <td>{{ $data->identitas }}</td>
-                                @if($data->foto_identitas)
-                                    <td><img src="{{ Storage::url($data->foto_identitas) }}" alt="Foto Identitas" width="150"></td>
-                                @else
-                                    <td class="text-danger fw-bold">Tidak ada foto</td>
-                                @endif
+                                <td>{{ $data->foto_identitas }}</td>
                                 @if($data->foto_tamu)
                                     <td><img src="{{ Storage::url($data->foto_tamu) }}" alt="Foto Tamu" width="150"></td>
                                 @else
@@ -62,12 +59,12 @@
                                 @endif
                                 <td>
                                     <div class="form-switch">
-                                        <input type="checkbox" id="statusSwitch" 
-                                        @if($data->status_keluar == 'aktif') checked @endif>
+                                        <input type="checkbox" id="statusSwitch"
+                                            @if ($data->status_keluar == 'keluar') checked @endif>
                                         <label for="statusSwitch"></label>
                                     </div>
                                 </td>
-                                
+
                                 <td>
                                     <form method="POST" action="{{ route('tamu.destroy', $data->id) }}">
                                         @csrf
@@ -89,24 +86,20 @@
 {{-- Data tabels js --}}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.js"></script>
 <script>
-
     $(document).ready(function() {
         $('#tableTamu').DataTable({
             "pageLength": 50
         });
     });
-    
-    $(document).on('change', '#statusSwitch', function(){
-        if($(this).is(":checked")) {
-            updateStatus('aktif', {{ $data->id ?? 'null' }});
-        } else {
-            updateStatus('keluar', {{ $data->id ?? 'null' }}); 
-        }
+
+    $(document).on('change', '#statusSwitch', function() {
+        var action = $(this).is(":checked") ? 'keluar' : 'aktif';
+        updateStatus(action, {{ $data->id }});
     });
 
-    function updateStatus(action) {
+    function updateStatus(action, id) {
         $.ajax({
-            url: '{{ route("updateStatus", ['id' => $data->id]) }}',
+            url: '{{ url("updateStatus") }}/' + id,
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
@@ -114,6 +107,7 @@
             },
             success: function(response) {
                 console.log(response);
+                // Add any additional logic you need here
             },
             error: function(xhr, status, error) {
                 console.log(error);

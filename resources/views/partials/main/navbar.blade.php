@@ -14,11 +14,8 @@
                     <div class="sb-nav-link-icon"><i class="bi bi-file-earmark"></i></div>
                     Data Tamu
                 </a>
-                <!--<a class="nav-link" href="GrafikTamu.html">
-                    <div class="sb-nav-link-icon"><i class="bi bi-clipboard-data"></i></div>
-                    Grafik Tamu-->
                 </a>
-                <a class="nav-link" href="RekapTamu.html">
+                <a class="nav-link {{ Route::is('rekap.index') ? 'active' : '' }}" href="{{ route('rekap.index') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Rekap Tamu
                 </a>

@@ -34,12 +34,12 @@ class LoginController extends Controller
     public function Login(Request $request)
     {
         $messages = [
-            'username.required' => Lang::get('web.login-username.required'),
+            'email.required' => Lang::get('web.login-email.required'),
             'password.required' => Lang::get('web.login-password.required'),
         ];
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ], $messages);
 
@@ -48,7 +48,7 @@ class LoginController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $credential = $request->only('username', 'password', 'remember');
+        $credential = $request->only('email', 'password', 'remember');
 
         if (Auth::attempt($credential)) {
             return redirect()->route('dashboard.index');

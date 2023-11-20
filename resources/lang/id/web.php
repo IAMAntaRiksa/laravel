@@ -3,14 +3,14 @@
 return [
     //Login
     'login-failed' => 'Gagal melakukan login',
-    'login-username.required' => 'Harap mengisi username',
+    'login-email.required' => 'Harap mengisi email',
     'login-password.required' => 'Harap mengisi password',
 
     //Param
-    'username' => 'Username',
-    'enter-username' => 'Masukkan username',
-    'username-required' => 'Username harus diisi',
-    'username-unique' => 'Username sudah digunakan',
+    'email' => 'email',
+    'enter-email' => 'Masukkan email',
+    'email-required' => 'email harus diisi',
+    'email-unique' => 'email sudah digunakan',
     'select-role' => 'Pilih role',
     'role_id-required' => 'Role harus dipilih',
     'role_id-integer' => 'Role harus angka',

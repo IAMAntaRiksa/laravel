@@ -28,7 +28,7 @@
                                 <td><span class="text-muted">
                                         {{ ++$key + ($datas->currentPage() - 1) * $datas->perPage() }}</span></td>
                                 <td>{{ $data->name }}</td>
-                                <td>{{ $data->username }}</td>
+                                <td>{{ $data->email }}</td>
                                 <td>
                                  
                                  

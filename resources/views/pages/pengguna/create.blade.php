@@ -24,10 +24,10 @@
                             </div>
                             <small class="form-text text-danger">{{ $errors->first('name') }}</small>
                             <div class="form-floating mb-3">
-                                <input class="form-control" name="username" id="inputEmail" type="email" placeholder="name@example.com" />
+                                <input class="form-control" name="email" id="inputEmail" type="email" placeholder="name@example.com" />
                                 <label for="inputEmail">Alamat Email</label>
                             </div>
-                            <small class="form-text text-danger">{{ $errors->first('username') }}</small>
+                            <small class="form-text text-danger">{{ $errors->first('email') }}</small>
                             <div class="form-floating mb-3">
                                 <input class="form-control" name="password" id="inputPassword" type="password" placeholder="buat password" />
                                 <label for="inputPassword">Sandi</label>

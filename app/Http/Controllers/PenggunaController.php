@@ -36,15 +36,15 @@ class PenggunaController extends Controller
     public function store(Request $request)
     {
         $messages = [
-            'username.required' => "Email Harus diisi",
-            'username.unique' => "Email Sudah digunakan",
+            'email.required' => "Email Harus diisi",
+            'email.unique' => "Email Sudah digunakan",
             'name.required' => "Nama Harus diisi",
             'password.required' => "Password Harus diisi",
        
         ];
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required|unique:users,username',
+            'email' => 'required|unique:users,email',
             'name' => 'required',
             'password' => 'required',
         ], $messages);
@@ -55,7 +55,7 @@ class PenggunaController extends Controller
         }
 
         $data = new User;
-        $data->username = $request->username;
+        $data->email = $request->email;
         $data->name = $request->name;
         $data->password = Hash::make($request->password);
     
@@ -89,15 +89,15 @@ class PenggunaController extends Controller
     public function update(Request $request, $id)
     {
         $messages = [
-            'username.required' => "Email Harus diisi",
-            'username.unique' => "Email Sudah digunakan",
+            'email.required' => "Email Harus diisi",
+            'email.unique' => "Email Sudah digunakan",
             'name.required' => "Nama Harus diisi",
             'password.required' => "Password Harus diisi",
        
         ];
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required|unique:users,username',
+            'email' => 'required|unique:users,email',
             'name' => 'required',
             'password' => 'required',
         ], $messages);
@@ -108,7 +108,7 @@ class PenggunaController extends Controller
         }
 
         $data = User::find($id);
-        $data->username = $request->username;
+        $data->email = $request->email;
         $data->name = $request->name;
         $data->password = Hash::make($request->password);
     

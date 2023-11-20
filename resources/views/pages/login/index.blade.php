@@ -12,10 +12,10 @@
                 </div>
             @endif
             <div class="form-floating mb-3">
-                <input name="username" type="text" id="email" class="form-control" placeholder="name@example.com">
+                <input name="email" type="text" id="email" class="form-control" placeholder="name@example.com">
                 <label for="email">Email</label>
                 @if ($errors->first('login'))
-                    <small class="text-danger">{{ $errors->first('username') }}</small>
+                    <small class="text-danger">{{ $errors->first('email') }}</small>
                 @endif
             </div>
             <div class="form-floating mb-3">

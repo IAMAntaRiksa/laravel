@@ -59,7 +59,7 @@
                                 </td>
                                 
                                 <td>
-                                    <form method="POST" action="">
+                                    <form method="POST" action="{{ route('tamu.destroy', $data->id) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm btn-delete">Hapus</button>
@@ -80,9 +80,9 @@
     
     $(document).on('change', '#statusSwitch', function(){
         if($(this).is(":checked")) {
-            updateStatus('aktif');
+            updateStatus('aktif', {{ $data->id ?? 'null' }});
         } else {
-            updateStatus('keluar'); 
+            updateStatus('keluar', {{ $data->id ?? 'null' }}); 
         }
     });
 

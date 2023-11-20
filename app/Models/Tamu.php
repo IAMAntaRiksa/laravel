@@ -12,7 +12,7 @@ class Tamu extends Model
     protected $fillable = [
         'name',
         'name_instansi',
-        'pekerjaan_instansi',
+        'pekerjaan_intansi',
         'tipe_tamu',
         'alamat',
         'pertemuan',
@@ -20,9 +20,9 @@ class Tamu extends Model
         'jam_masuk',
         'jam_keluar',
         'identitas',
-        'status_keluar',
-        'foto_identitas',
         'foto_tamu',
+        // 'status_keluar',
+        // 'foto_identitas',
     ];
 
     protected $dates = [

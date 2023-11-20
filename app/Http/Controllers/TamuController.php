@@ -6,6 +6,7 @@ use App\Models\Tamu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class TamuController extends Controller
@@ -19,7 +20,7 @@ class TamuController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $tamu = Tamu::findOrFail($id);
+        $tamu = Tamu::find($id);
         $action = $request->action;
 
         if ($action == 'aktif') {
@@ -31,42 +32,62 @@ class TamuController extends Controller
         $tamu->save();
         return response()->json('Status and Jam Keluar tamu berhasil diperbarui');
     }
-    public function create(){
-        return view('pages.tamu.create');
+
+    public function create()
+    {
+        $jam_masuk_default = Carbon::now('Asia/Jakarta')->format('H:i');
+        return view('pages.tamu.create', compact('jam_masuk_default'));
     }
 
     public function store(Request $request)
     {
-        $messages = [
-            'name.required' => "Nama Harus diisi",
-        ];
-        $validator = Validator::make($request->all(), [
+        // Validate the form data
+        $validatedData = $request->validate([
             'name' => 'required',
-        ], $messages);
+            'name_instansi' => 'required',
+            'pekerjaan_intansi' => 'required',
+            'tipe_tamu' => 'required',
+            'alamat' => 'required',
+            'pertemuan' => 'required',
+            'keperluan' => 'required',
+            'jam_masuk' => 'required',
+            'jam_keluar' => 'required',
+            'identitas' => 'required',
+            'foto_tamu' => 'required|string',
+        ]);
 
-        if ($validator->fails()) {
-            $validator->errors()->add('message', "Data Tidak boleh kosong");
-            return redirect()->back()->withInput()->withErrors($validator);
+        // dd($request->foto_tamu);
+    
+        // Store the image file
+        if ($request->has('foto_tamu')) {
+            $image_parts = explode(";base64,", $request->input('foto_tamu'));
+            $image_base64 = base64_decode($image_parts[1]);
+            $imageName = uniqid() . '.png';
+            $filePath = 'public/foto_tamu/' . $imageName;
+            Storage::put($filePath, $image_base64);
+            
+            // Update the path in the validated data
+            $validatedData['foto_tamu'] = $filePath;
         }
-        $tamu = new Tamu();
-        $tamu->name = $request->name;
-        $tamu->name_instansi = $request->name_instansi;
-        $tamu->pekerjaan_instansi = $request->pekerjaan_instansi;
-        $tamu->tipe_tamu = $request->tipe_tamu;
-        $tamu->alamat = $request->alamat;
-        $tamu->pertemuan = $request->pertemuan;
-        $tamu->keperluan = $request->keperluan;
-        $tamu->jam_masuk = $request->jam_masuk;
-        $tamu->identitas = $request->identitas;
-        $tamu->foto_identitas = $request->foto_identitas;
-        $tamu->foto_tamu = $request->foto_tamu;
-        try { 
-            $tamu->save();  
-        } catch (\Exception $errors) {
-            return redirect()->back()
-                ->withInput()->withErrors(['message' => "Gagal Menambhkan Data"]);
-        }
+    
+        // Create a new Tamu model instance and save the data
+        $tamu = Tamu::create($validatedData);
+    
+        // Redirect or return response as per your requirement
+        return redirect()->back()->with('success', 'Data Tamu berhasil ditambahkan.');
+    }
 
-        return redirect()->route('tamu.index')->with('success', 'Tamu added successfully.');
+    public function edit()
+    {
+
+    }
+
+    public function destroy($id)
+    {
+        $data = Tamu::findOrFail($id);
+
+        $data->delete();
+
+        return redirect()->route('tamu.index')->with('success', 'Data Tamu berhasil dihapus.');
     }
 }

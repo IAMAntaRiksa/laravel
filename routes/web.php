@@ -35,5 +35,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/tamu/create', [TamuController::class, 'store'])->name('tamu.store');
         Route::get('/tamu', [TamuController::class, 'index'])->name('tamu.index');
         Route::post('/update-status/{id}', [TamuController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/tamu/{id}', [TamuController::class, 'destroy'])->name('tamu.destroy');
         Route::get('logout', [PenggunaController::class, 'logout'])->name('logout.index');
 });

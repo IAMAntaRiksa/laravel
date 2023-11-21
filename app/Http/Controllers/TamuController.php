@@ -51,9 +51,9 @@ class TamuController extends Controller
             'pertemuan' => 'required',
             'keperluan' => 'required',
             'jam_masuk' => 'required',
-            'jam_keluar' => 'required',
+            'jam_keluar' => 'nullable',
             'identitas' => 'required',
-            'foto_tamu' => 'required|string',
+            'foto_tamu' => 'nullable|string',
         ]);
 
         // dd($request->foto_tamu);
@@ -74,12 +74,36 @@ class TamuController extends Controller
         $tamu = Tamu::create($validatedData);
     
         // Redirect or return response as per your requirement
-        return redirect()->back()->with('success', 'Data Tamu berhasil ditambahkan.');
+        alert()->success('Succsess', 'Data tamu telah berhasil ditambahkan');
+        return redirect()->route('tamu.index');
     }
 
-    public function edit()
+    public function edit($id)
     {
+        $tamu = Tamu::find($id);
+        return view('pages.tamu.edit', compact('tamu'));
+    }
 
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'name_instansi' => 'required',
+            'pekerjaan_intansi' => 'required',
+            'tipe_tamu' => 'required',
+            'alamat' => 'required',
+            'pertemuan' => 'required',
+            'keperluan' => 'required',
+            'jam_masuk' => 'required',
+            'jam_keluar' => 'nullable',
+            'identitas' => 'required',
+        ]);
+
+        $tamu = Tamu::findOrFail($id);
+        $tamu->update($request->all());
+
+        alert()->success('Succsess', 'Data tamu telah berhasil diupdate');
+        return redirect()->route('tamu.index')->with('success', 'Data Tamu berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -88,6 +112,7 @@ class TamuController extends Controller
 
         $data->delete();
 
+        alert()->success('Succsess', 'Data tamu telah berhasil dihapus');
         return redirect()->route('tamu.index')->with('success', 'Data Tamu berhasil dihapus.');
     }
 }

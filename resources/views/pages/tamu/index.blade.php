@@ -1,5 +1,7 @@
 @extends('layouts.app', ['title' => 'Data Tamu'])
 
+{{-- Data tables --}}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.css" />
 @section('content')
     <div class="container-fluid px-4">
         <h3 class="mt-4">Data Tamu</h3>
@@ -13,7 +15,7 @@
             <hr>
             <div class="table-responsive">
                 <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Tambah</a>
-                <table class="table table-hover">
+                <table id="tableTamu" class="table table-hover">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -49,7 +51,11 @@
                                 <td id="jamKeluarField">{{ $data->jam_keluar }}</td>
                                 <td>{{ $data->identitas }}</td>
                                 <td>{{ $data->foto_identitas }}</td>
-                                <td>{{ $data->foto_tamu }}</td>
+                                @if($data->foto_tamu)
+                                    <td><img src="{{ Storage::url($data->foto_tamu) }}" alt="Foto Tamu" width="150"></td>
+                                @else
+                                    <td class="text-danger fw-bold">Tidak ada foto</td>
+                                @endif
                                 <td>
                                     <div class="form-switch">
                                         <input type="checkbox" id="statusSwitch" 
@@ -64,7 +70,7 @@
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm btn-delete">Hapus</button>
                                     </form>
-                                    <a href=""
+                                    <a href="{{ route('tamu.edit', ['id' => $data->id]) }}"
                                         class="btn btn-info btn-sm btn-loader">Edit</a>
                                 </td>
                             </tr>
@@ -76,7 +82,15 @@
     </div>
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- Data tabels js --}}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.js"></script>
 <script>
+
+    $(document).ready(function() {
+        $('#tableTamu').DataTable({
+            "pageLength": 50
+        });
+    });
     
     $(document).on('change', '#statusSwitch', function(){
         if($(this).is(":checked")) {

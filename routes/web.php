@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PenggunaController;
@@ -50,5 +50,8 @@ Route::group(['middleware' => ['auth']], function () {
         /// Rekap PDF
         Route::get('/export-pdf', [PDFController::class, 'exportPDF'])->name('exportPDF');
         Route::get('/export', [ExcelController::class, 'export'])->name('export');
+
+        Route::get('/export', [ExportController::class, 'exportToExcel'])->name('export');
+
 
 });

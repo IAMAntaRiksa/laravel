@@ -50,7 +50,11 @@
                                 <td>{{ $data->jam_masuk }}</td>
                                 <td id="jamKeluarField">{{ $data->jam_keluar }}</td>
                                 <td>{{ $data->identitas }}</td>
-                                <td>{{ $data->foto_identitas }}</td>
+                                @if($data->foto_identitas)
+                                    <td><img src="{{ Storage::url($data->foto_identitas) }}" alt="Foto Identitas" width="150"></td>
+                                @else
+                                    <td class="text-danger fw-bold">Tidak ada foto</td>
+                                @endif
                                 @if($data->foto_tamu)
                                     <td><img src="{{ Storage::url($data->foto_tamu) }}" alt="Foto Tamu" width="150"></td>
                                 @else

@@ -12,7 +12,7 @@
     </div>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-7">
+            <div class="col-lg-12">
                 <div class="card shadow-lg border-0 rounded-lg mt-5 mb-5">
                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Data Tamu</h3></div>
                     <div class="card-body">
@@ -76,6 +76,7 @@
                                 <small class="form-text text-danger">{{ $errors->first('identitasdiri') }}</small>
                                 <label for="inputIdentitas">Identitas Diri</label>
                             </div>
+                            <input name="foto_identitas" class="form-control" id="inputFotoIdentitas" type="hidden" placeholder="foto_identitas" />
                             <input name="foto_tamu" class="form-control" id="inputFotoTamu" type="hidden" placeholder="foto_tamu" />
                             <div class="text-center">
                                 <a href="#" class="btn btn-success" id="foto-identitas"><i class="bi bi-camera me-2"></i>Foto Identitas</a>
@@ -92,10 +93,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5">
+            
+            {{-- Webcam Foto Identitas --}}
+            <div class="col-lg-6">
                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                     <div class="card-header">
-                        <h3 class="text-center font-weight-light my-4">Preview Foto Tamu</h3>
+                        <h3 class="text-center font-weight-light my-4">Preview Foto Identitas</h3>
                     </div>
                     <div class="card-body">
                         <div class="row justify-content-center">
@@ -109,13 +112,85 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Webcam Foto Tamu --}}
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header">
+                        <h3 class="text-center font-weight-light my-4">Preview Foto Tamu</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 text-center">
+                                <div id="video2"></div>
+                                <h5 class="mt-3 text-success">Hasil Capture</h5>
+                                <div id="hasil-capture2"></div>
+                                <button id="capture-btn2" class="btn btn-primary mt-3" type="button">Capture</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
 <script>
-    // Menunggu dokumen selesai dimuat
+    // Untuk foto indentitas
+    document.addEventListener('DOMContentLoaded', function() {
+    var fotoIdentitasBtn = document.getElementById('foto-identitas');
+
+        // Mengaktifkan WebcamJS saat tombol foto identitas ditekan
+        fotoIdentitasBtn.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                // Set ukuran untuk mobile
+                Webcam.set({
+                    width: 300,
+                    height: 225,
+                    dest_width: 300,
+                    dest_height: 225,
+                    image_format: 'png',
+                    jpeg_quality: 90
+                });
+            } else {
+                // Set ukuran untuk laptop
+                Webcam.set({
+                    width: 400,
+                    height: 300,
+                    dest_width: 400,
+                    dest_height: 300,
+                    image_format: 'png',
+                    jpeg_quality: 90
+                });
+            }
+            Webcam.attach('#video');
+        });
+
+        // Mengambil foto saat tombol capture ditekan
+        var captureBtn = document.getElementById('capture-btn');
+        var hasilCapture = document.getElementById('hasil-capture'); // Elemen untuk menampilkan hasil capture
+        var inputFotoIdentitas = document.getElementById('inputFotoIdentitas');
+
+        captureBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah form submit bawaan
+
+            Webcam.snap(function(dataURL) {
+                // Menampilkan hasil capture pada elemen HTML
+                var img = document.createElement('img');
+                img.src = dataURL;
+                img.width = 400;
+                img.height = 300;
+                hasilCapture.innerHTML = '';
+                hasilCapture.appendChild(img);
+
+                // Simpan dataURL ke dalam inputFotoIdentitas
+                inputFotoIdentitas.value = dataURL;
+            });
+        });
+    });
+
+    // Untuk Foto Tamu
     document.addEventListener('DOMContentLoaded', function() {
         // Mengakses tombol foto tamu
         var fotoTamuBtn = document.getElementById('foto-tamu');
@@ -143,12 +218,12 @@
                     jpeg_quality: 90
                 });
             }
-            Webcam.attach('#video');
+            Webcam.attach('#video2');
         });
 
        // Mengambil foto saat tombol capture ditekan
-        var captureBtn = document.getElementById('capture-btn');
-        var hasilCapture = document.getElementById('hasil-capture'); // Elemen untuk menampilkan hasil capture
+        var captureBtn = document.getElementById('capture-btn2');
+        var hasilCapture = document.getElementById('hasil-capture2'); // Elemen untuk menampilkan hasil capture
         var inputFotoTamu = document.getElementById('inputFotoTamu');
 
         captureBtn.addEventListener('click', function(event) {
@@ -168,4 +243,6 @@
             });
         });
     });
+
+
 </script>

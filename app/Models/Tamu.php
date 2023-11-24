@@ -21,8 +21,8 @@ class Tamu extends Model
         'jam_keluar',
         'identitas',
         'foto_tamu',
+        'foto_identitas',
         // 'status_keluar',
-        // 'foto_identitas',
     ];
 
     protected $dates = [

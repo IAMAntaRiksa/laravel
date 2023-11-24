@@ -53,12 +53,25 @@ class TamuController extends Controller
             'jam_masuk' => 'required',
             'jam_keluar' => 'nullable',
             'identitas' => 'required',
+            'foto_identitas' => 'nullable|string',
             'foto_tamu' => 'nullable|string',
         ]);
 
         // dd($request->foto_tamu);
     
-        // Store the image file
+        // Store image foto indentitas
+        if ($request->has('foto_identitas')) {
+            $image_parts = explode(";base64,", $request->input('foto_identitas'));
+            $image_base64 = base64_decode($image_parts[1]);
+            $imageName = uniqid() . '.png';
+            $filePath = 'public/foto_identitas/' . $imageName;
+            Storage::put($filePath, $image_base64);
+            
+            // Update the path in the validated data
+            $validatedData['foto_identitas'] = $filePath;
+        }
+
+        // Store image foto_tamu
         if ($request->has('foto_tamu')) {
             $image_parts = explode(";base64,", $request->input('foto_tamu'));
             $image_base64 = base64_decode($image_parts[1]);

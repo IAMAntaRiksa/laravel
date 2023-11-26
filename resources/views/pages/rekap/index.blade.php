@@ -108,7 +108,26 @@
             { data: 'identitas', name: 'identitas' },
             // { data: 'foto_identitas', name: 'foto_identitas' },
             // { data: 'foto_tamu', name: 'foto_tamu' },
-            { data: 'created_at', name: 'created_at' }
+            {
+                data: 'created_at',
+                name: 'created_at',
+                render: function(data, type, full, meta) {
+                    // Konversi format tanggal dari ISO ke format D/M/Y
+                    var date = new Date(data);
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1; // Dalam JavaScript, bulan dimulai dari 0
+                    var year = date.getFullYear();
+
+                    // Pad nol di depan jika diperlukan
+                    day = day < 10 ? '0' + day : day;
+                    month = month < 10 ? '0' + month : month;
+
+                    // Gabungkan menjadi format D/M/Y
+                    var formattedDate = day + '/' + month + '/' + year;
+
+                    return formattedDate;
+                }
+            }
             
         ], 
         "language": {

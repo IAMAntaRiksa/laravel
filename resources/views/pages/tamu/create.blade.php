@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <h3 class="mt-4">Data Tamu</h3>
         <ol class="breadcrumb mb-4">
-            <a class="breadcrumb-item text-decoration-none text-dark" href="DataTamu.html">Data Tamu</a>
+            <a class="breadcrumb-item text-decoration-none text-dark" href="{{route('tamu.index')}}">Data Tamu</a>
             <a class="breadcrumb-item text-decoration-none active" href="TambahDataTamu.html">Tambah Data Tamu</a>
         </ol>
     </div>

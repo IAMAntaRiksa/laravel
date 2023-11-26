@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <h3 class="mt-4">Pengguna</h3>
         <ol class="breadcrumb mb-4">
-            <a class="breadcrumb-item text-decoration-none text-dark" href="Pengguna.html">Pengguna</a>
+            <a class="breadcrumb-item text-decoration-none text-dark" href="{{route('pengguna.index')}}">Pengguna</a>
             <a class="breadcrumb-item text-decoration-none active" href="TambahPengguna.html">Tambah Pengguna</a>
         </ol>
     </div>

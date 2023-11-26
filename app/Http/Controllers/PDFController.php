@@ -15,7 +15,7 @@ class PDFController extends Controller
         // Render PDF
         $pdf = new Dompdf();
         $pdf->loadHtml(view('pages.rekap.pdf', compact('data')));
-        $pdf->setPaper('A4', 'portrait');
+        $pdf->setPaper('A4', 'landscape');
         $pdf->render();
     
         // Generate file name

@@ -96,11 +96,15 @@
         });
     });
 
-    $(document).on('change', '.statusSwitch', function() {
-        var action = $(this).is(":checked") ? 'keluar' : 'aktif';
-        var tamuId = $(this).closest('td').data('tamu-id');
+    $(document).on('change', '.statusSwitch', function(event) {
+    event.preventDefault();
 
-        updateStatus(action, tamuId);
+    var action = $(this).is(":checked") ? 'keluar' : 'aktif';
+    var tamuId = $(this).closest('td').data('tamu-id');
+
+    updateStatus(action, tamuId);
+
+        location.reload();
     });
 
     function updateStatus(action, id) {

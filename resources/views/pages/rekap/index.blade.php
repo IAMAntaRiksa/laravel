@@ -41,8 +41,8 @@
                             <th>Jam Masuk</th>
                             <th>Jam Keluar</th>
                             <th>Identitas Diri</th>
-                            {{-- <th>Foto Identitas</th>
-                            <th>Foto Tamu</th> --}}
+                            <th>Foto Identitas</th>
+                            <th>Foto Tamu</th>
                             <th>Tanggal</th>
                         </tr>
                     </thead>
@@ -106,8 +106,30 @@
             { data: 'jam_masuk', name: 'jam_masuk' },
             { data: 'jam_keluar', name: 'jam_keluar' },
             { data: 'identitas', name: 'identitas' },
-            // { data: 'foto_identitas', name: 'foto_identitas' },
-            // { data: 'foto_tamu', name: 'foto_tamu' },
+            {
+                data: 'foto_identitas',
+                name: 'foto_identitas',
+                render: function(data, type, row, meta) {
+                    if (data) {
+                        var url = window.location.origin + '/storage/' + data.replace('public/', '');
+                        return '<img src="' + url + '" alt="Foto Identitas" width="150" />';
+                    } else {
+                        return '<span class="text-danger">foto tidak tersedia</span>';
+                    }
+                }
+            },
+            {
+                data: 'foto_tamu',
+                name: 'foto_tamu',
+                render: function(data, type, row, meta) {
+                    if (data) {
+                        var url = window.location.origin + '/storage/' + data.replace('public/', '');
+                        return '<img src="' + url + '" alt="Foto Tamu" width="150" />';
+                    } else {
+                        return '<span class="text-danger">foto tidak tersedia</span>';
+                    }
+                }
+            },
             {
                 data: 'created_at',
                 name: 'created_at',

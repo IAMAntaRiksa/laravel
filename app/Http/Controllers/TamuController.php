@@ -20,26 +20,32 @@ class TamuController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $tamu = Tamu::find($id);
 
+    
+        $tamu = Tamu::find($id);
+    
         if (!$tamu) {
-            return response()->json('Tamu not found', 404);
+            return response()->json(['error' => 'Tamu not found for ID ' . $idTamuToUpdate], 404);
         }
     
         $action = $request->action;
     
         if ($action == 'aktif') {
-            $tamu->status_keluar = 'aktif';
+            $tamu->update([
+                'status_keluar' => 'aktif',
+                'jam_keluar' => null,
+            ]);
+      
         } elseif ($action == 'keluar') {
-            $tamu->jam_keluar = Carbon::now('Asia/Jakarta')->format('H:i:s');
-            $tamu->status_keluar = 'keluar';
+            $tamu->update([
+                'status_keluar' => 'keluar',
+                'jam_keluar' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
+            ]);
+    
         }
     
-        $tamu->save();
-    
-        return response()->json('Status and Jam Keluar tamu berhasil diperbarui');
+        return response()->json(['message' => 'Status and Jam Keluar tamu berhasil diperbarui']);
     }
-
     public function create()
     {
         $jam_masuk_default = Carbon::now('Asia/Jakarta')->format('H:i');

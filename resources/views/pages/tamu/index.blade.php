@@ -51,15 +51,19 @@
                                 <td>{{ $data->jam_masuk }}</td>
                                 <td id="jamKeluarField">{{ $data->jam_keluar }}</td>
                                 <td>{{ $data->identitas }}</td>
-                                <td>{{ $data->foto_identitas }}</td>
+                                @if($data->foto_identitas)
+                                    <td><img src="{{ Storage::url($data->foto_identitas) }}" alt="Foto Tamu" width="150"></td>
+                                @else
+                                    <td class="text-danger fw-bold">Tidak ada foto</td>
+                                @endif
                                 @if($data->foto_tamu)
                                     <td><img src="{{ Storage::url($data->foto_tamu) }}" alt="Foto Tamu" width="150"></td>
                                 @else
                                     <td class="text-danger fw-bold">Tidak ada foto</td>
                                 @endif
-                                <td>
+                                <td data-tamu-id="{{ $data->id }}">
                                     <div class="form-switch">
-                                        <input type="checkbox" id="statusSwitch"
+                                        <input type="checkbox" class="statusSwitch"
                                             @if ($data->status_keluar == 'keluar') checked @endif>
                                         <label for="statusSwitch"></label>
                                     </div>
@@ -92,14 +96,16 @@
         });
     });
 
-    $(document).on('change', '#statusSwitch', function() {
+    $(document).on('change', '.statusSwitch', function() {
         var action = $(this).is(":checked") ? 'keluar' : 'aktif';
-        updateStatus(action, {{ $data->id }});
+        var tamuId = $(this).closest('td').data('tamu-id');
+
+        updateStatus(action, tamuId);
     });
 
     function updateStatus(action, id) {
         $.ajax({
-            url: '{{ url("updateStatus") }}/' + id,
+            url: '{{ url('updateStatus') }}/' + id,
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
@@ -107,7 +113,6 @@
             },
             success: function(response) {
                 console.log(response);
-                // Add any additional logic you need here
             },
             error: function(xhr, status, error) {
                 console.log(error);

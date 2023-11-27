@@ -10,6 +10,7 @@ class Tamu extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'name',
         'name_instansi',
         'pekerjaan_intansi',
@@ -22,7 +23,7 @@ class Tamu extends Model
         'identitas',
         'foto_tamu',
         'foto_identitas',
-        // 'status_keluar',
+        'status_keluar',
     ];
 
     protected $dates = [

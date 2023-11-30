@@ -61,7 +61,7 @@
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 
 <script>
- $(document).ready(function() {
+    $(document).ready(function() {
     var table = $('#dataTable').DataTable({
         "dom": 'Brtip', 
         "buttons": ['print', 'excel'],
@@ -69,8 +69,9 @@
         processing: true,
         serverSide: true,
         paging: true,
-      // bLengthChange: false,
-      bAutoWidth: false,
+        "order": [],
+        // bLengthChange: false,
+        bAutoWidth: false,
         ajax: {
             url: '{{ route('getData') }}',
             type: 'GET',
@@ -91,12 +92,11 @@
         },
         columns: [
             { 
-          data: null,
-            "sortable": false,
+            data: null,
             render: function (data, type, row, meta) {
-              return meta.row + meta.settings._iDisplayStart + 1;
+                return meta.row + meta.settings._iDisplayStart + 1;
             },
-          },
+            },
             { data: 'name', name: 'name' },
             { data: 'name_instansi', name: 'name_instansi' },
             { data: 'tipe_tamu', name: 'tipe_tamu' },
@@ -166,6 +166,5 @@
     $('#filterDate').on('change', function() {
         table.draw();
     });
-});
-
+    });
 </script>

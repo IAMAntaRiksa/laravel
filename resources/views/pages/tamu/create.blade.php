@@ -18,10 +18,24 @@
                     <div class="card-body">
                         <form action="{{ route('tamu.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            <div class="form-group">
+                                <input type="file" name="ktp" accept="image/*" class="form-control-file" id="ktpImage" required>
+                            </div>
+
                             <div class="form-floating mb-3">
-                                <input name="name" class="form-control" id="inputNama" type="text" placeholder="nama" />
+                                <input name="name" class="form-control" id="nama" type="text" placeholder="nama" />
                                 <small class="form-text text-danger">{{ $errors->first('name') }}</small>
-                                <label for="inputNama">Nama</label>
+                                <label for="nama">Nama</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input  class="form-control" id="nik" name="identitas" type="text" placeholder="identitasdiri" />
+                                <small class="form-text text-danger">{{ $errors->first('identitasdiri') }}</small>
+                                <label for="nik">Identitas Diri</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input name="alamat" class="form-control" id="alamat" type="text" placeholder="alamat" />
+                                <small class="form-text text-danger">{{ $errors->first('alamat') }}</small>
+                                <label for="alamat">Alamat</label>
                             </div>
                             <div class="form-floating mb-3">
                                 <input name="name_instansi" class="form-control" id="inputNameInstansi" type="text" placeholder="name_instansi" />
@@ -34,17 +48,18 @@
                                 <label for="inputPekerjaan">Pekerjaan/Instansi</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <select name="tipe_tamu" required class="form-select" aria-label="Default select example">
+                                <select name="tipe_tamu" id="tipeTamu" required class="form-select" aria-label="Default select example">
                                     <option selected disabled>Tipe Tamu</option>
-                                    <option value="penting">Penting</option>
-                                    <option value="biasa">Biasa</option>
+                                    <option value="perorangan">Perorangan</option>
+                                    <option value="perkelompok">Perkelompok</option>
                                 </select>
                             </div>
-                            <div class="form-floating mb-3">
-                                <input name="alamat" class="form-control" id="inputAlamat" type="text" placeholder="alamat" />
-                                <small class="form-text text-danger">{{ $errors->first('alamat') }}</small>
-                                <label for="inputAlamat">Alamat</label>
+                            <div class="form-floating mb-3 d-none" id="pdfUpload">
+                                <input name="file_pdf" class="form-control" id="inputFilePDF" type="file" accept="application/pdf" />
+                                <small class="form-text text-danger">{{ $errors->first('file_pdf') }}</small>
+                                <label for="inputFilePDF">Upload File PDF</label>
                             </div>
+                           
                             <div class="form-floating mb-3">
                                 <input name="pertemuan" class="form-control" id="inputDitemui" type="text" placeholder="yang ditemui" />
                                 <small class="form-text text-danger">{{ $errors->first('pertemuan') }}</small>
@@ -71,11 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-floating mb-3">
-                                <input  class="form-control" id="inputIdentitas" name="identitas" type="text" placeholder="identitasdiri" />
-                                <small class="form-text text-danger">{{ $errors->first('identitasdiri') }}</small>
-                                <label for="inputIdentitas">Identitas Diri</label>
-                            </div>
+                           
                             <input name="foto_identitas" class="form-control" id="inputFotoIdentitas" type="hidden" placeholder="foto_identitas" />
                             <input name="foto_tamu" class="form-control" id="inputFotoTamu" type="hidden" placeholder="foto_tamu" />
                             <div class="text-center">
@@ -135,8 +146,11 @@
     </div>
 </main>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
 <script>
+    
     // Untuk foto indentitas
     document.addEventListener('DOMContentLoaded', function() {
     var fotoIdentitasBtn = document.getElementById('foto-identitas');
@@ -244,5 +258,54 @@
         });
     });
 
+    // Menampilkan atau menyembunyikan input file PDF berdasarkan tipe tamu
+    $(document).ready(function() {
+        $('#tipeTamu').change(function() {
+            var tipeTamu = $(this).val();
+            if (tipeTamu === 'perkelompok') {
+                $('#pdfUpload').removeClass('d-none');
+                $('#inputFilePDF').attr('required', true);
+            } else {
+                $('#pdfUpload').addClass('d-none');
+                $('#inputFilePDF').removeAttr('required');
+            }
+        });
+    });
+
+    $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#ktpImage').on('change', function(event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                formData.append('ktp', $(this)[0].files[0]);
+
+                $.ajax({
+                    url: '/upload-ktp',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log("response");
+                        if (response.identitas) {
+                            $('#nik').val(response.identitas.NIK || '');
+                            $('#nama').val(response.identitas.Nama || '');
+                            $('#alamat').val(response.identitas.Alamat || '');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert('An error occurred while processing your request.');
+                    }
+                });
+            });
+        });
 
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

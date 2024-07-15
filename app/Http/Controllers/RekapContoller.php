@@ -1,25 +1,23 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Tamu;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 
 class RekapContoller extends Controller
 {
-
     public function index()
     {
-
         return view('pages.rekap.index');
     }
 
     public function getData(Request $request)
     {
         $search = $request->input('search.value');
-        $day = $request->input('day');
-        $month = $request->input('month');
-        $year = $request->input('year');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $tipeTamu = $request->input('tipe_tamu');
 
         $dataQuery = Tamu::query();
 
@@ -27,10 +25,13 @@ class RekapContoller extends Controller
             $dataQuery->where('name', 'like', '%' . $search . '%');
         }
 
-        if ($day && $month && $year) {
-            $dataQuery->whereDay('created_at', $day)
-                ->whereMonth('created_at', $month)
-                ->whereYear('created_at', $year);
+        if ($startDate && $endDate) {
+            $endDate = date('Y-m-d', strtotime($endDate . ' +1 day'));
+            $dataQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if (!empty($tipeTamu)) {
+            $dataQuery->where('tipe_tamu', $tipeTamu);
         }
 
         $orderColumn = $request->input('order.0.column');
@@ -55,5 +56,43 @@ class RekapContoller extends Controller
             'recordsFiltered' => $totalData,
             'data' => $data,
         ]);
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $tipeTamu = $request->input('tipe_tamu');
+
+        $dataQuery = Tamu::query();
+
+        if ($startDate && $endDate) {
+            $endDate = date('Y-m-d', strtotime($endDate . ' +1 day'));
+            $dataQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if (!empty($tipeTamu)) {
+            $dataQuery->where('tipe_tamu', $tipeTamu);
+        }
+
+        $data = $dataQuery->get();
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml(view('pages.rekap.pdf', compact('data')));
+
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->render();
+    
+        // Generate file name
+        $fileName = 'data.pdf';
+    
+        // Set response headers
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+        ];
+    
+        // Output the generated PDF to the browser
+        return response($pdf->output(), 200, $headers);
     }
 }

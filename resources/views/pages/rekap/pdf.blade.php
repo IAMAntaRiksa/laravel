@@ -55,7 +55,6 @@
             </thead>
             <tbody>
                 @foreach ($data as  $key=>$item)
-                   
                     <tr>
                         @php
                         $no = $key+1;
@@ -76,7 +75,6 @@
                         <td>{{ $item->jam_keluar }}</td>
                         <td>{{ $item->identitas }}</td>
                         <td>{{ $item->status_keluar }}</td>
-                
                     </tr>
                 @endforeach
             </tbody>

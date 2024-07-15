@@ -12,7 +12,11 @@
             <h4 class="card-title">Data Admin</h4>
             <hr>
             <div class="table-responsive">
+       
+                @if (Auth::check() && (Auth::user()->id != 2 || is_null(Auth::user()->id)))   
                 <a href="{{ route('pengguna.create') }}"class="btn btn-primary btn-sm float-end"><i class="bi-plus"></i>Tambah</a>
+                @endif
+              
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -31,7 +35,7 @@
                                 <td>{{ $data->email }}</td>
                                 <td>
                                  
-                                 
+                                    @if (Auth::check() && (Auth::user()->id != 2 || is_null(Auth::user()->id)))   
                                     <form method="POST" action="{{ route('pengguna.delete', $data->id) }}">
                                         @csrf
                                         @method('DELETE')
@@ -39,6 +43,8 @@
                                     </form>
                                     <a href="{{ route('pengguna.edit', $data->id) }}"
                                         class="btn btn-info btn-sm btn-loader">Edit</a>
+                                    @endif
+                                  
 
                                 </td>
                             </tr>

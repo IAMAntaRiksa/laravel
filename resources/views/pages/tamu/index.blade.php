@@ -14,8 +14,13 @@
             <h4 class="card-title">Data Tamu</h4>
             <hr>
             <div class="table-responsive">
-                <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i
-                        class="bi bi-plus-circle me-1"></i>Tambah</a>
+                <td>
+                    @if (!Auth::check())
+                        <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Tambah</a>
+                    @elseif (Auth::check() && (Auth::user()->id != 2 || is_null(Auth::user()->id)))
+                       <a href="{{ route('tamu.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Tambah</a>
+                    @endif
+                </td>
                 <table id="tableTamu" class="table table-hover">
                     <thead>
                         <tr>
@@ -31,6 +36,7 @@
                             <th>Identitas Diri</th>
                             <th>Foto Identitas</th>
                             <th>Foto Tamu</th>
+                            <th>File PDF</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -42,9 +48,7 @@
                                         {{ ++$key + ($tamulist->currentPage() - 1) * $tamulist->perPage() }}</span></td>
                                 <td>{{ $data->name }}</td>
                                 <td>{{ $data->pekerjaan_intansi }}</td>
-                                <td>
-                                    {{ $data->tipe_tamu }}
-                                </td>
+                                <td>{{ $data->tipe_tamu }}</td>
                                 <td>{{ $data->alamat }}</td>
                                 <td>{{ $data->pertemuan }}</td>
                                 <td>{{ $data->keperluan }}</td>
@@ -61,6 +65,11 @@
                                 @else
                                     <td class="text-danger fw-bold">Tidak ada foto</td>
                                 @endif
+                                @if($data->file_pdf)
+                                    <td><a href="{{ Storage::url($data->file_pdf) }}" target="_blank">Lihat PDF</a></td>
+                                @else
+                                    <td class="text-danger fw-bold">Tidak ada file</td>
+                                @endif
                                 <td data-tamu-id="{{ $data->id }}">
                                     <div class="form-switch">
                                         <input type="checkbox" class="statusSwitch"
@@ -70,24 +79,28 @@
                                 </td>
 
                                 <td>
-                                    <form method="POST" action="{{ route('tamu.destroy', $data->id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm btn-delete">Hapus</button>
-                                    </form>
-                                    <a href="{{ route('tamu.edit', ['id' => $data->id]) }}"
-                                        class="btn btn-info btn-sm btn-loader">Edit</a>
+                                      @if (Auth::check() && (Auth::user()->id != 2 || is_null(Auth::user()->id)))
+                                        <form method="POST" action="{{ route('tamu.destroy', $data->id) }}" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm btn-delete">Hapus</button>
+                                        </form>
+                                        <a href="{{ route('tamu.edit', ['id' => $data->id]) }}" class="btn btn-info btn-sm btn-loader">Edit</a>
+                                    @endif
                                 </td>
+                                
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+            {{ $tamulist->links() }}
         </div>
     </div>
 @endsection
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-{{-- Data tabels js --}}
+{{-- Data tables js --}}
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -97,13 +110,12 @@
     });
 
     $(document).on('change', '.statusSwitch', function(event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var action = $(this).is(":checked") ? 'keluar' : 'aktif';
-    var tamuId = $(this).closest('td').data('tamu-id');
+        var action = $(this).is(":checked") ? 'keluar' : 'aktif';
+        var tamuId = $(this).closest('td').data('tamu-id');
 
-    updateStatus(action, tamuId);
-
+        updateStatus(action, tamuId);
         location.reload();
     });
 

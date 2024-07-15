@@ -24,6 +24,7 @@ class Tamu extends Model
         'foto_tamu',
         'foto_identitas',
         'status_keluar',
+        'file_pdf',
     ];
 
     protected $dates = [

@@ -25,7 +25,7 @@ class TamuController extends Controller
         $tamu = Tamu::find($id);
     
         if (!$tamu) {
-            return response()->json(['error' => 'Tamu not found for ID ' . $idTamuToUpdate], 404);
+            return response()->json(['error' => 'Tamu not found for ID ' . $tamu], 404);
         }
     
         $action = $request->action;
@@ -66,35 +66,45 @@ class TamuController extends Controller
             'jam_masuk' => 'required',
             'jam_keluar' => 'nullable',
             'identitas' => 'required',
+            'foto_ktp' => 'nullable|string', 
             'foto_identitas' => 'nullable|string',
             'foto_tamu' => 'nullable|string',
+            'file_pdf' => 'nullable|mimes:pdf|max:2048',
         ]);
 
+
+        // Handle PDF file upload if tipe_tamu is perkelompok
+        if ($request->input('tipe_tamu') == 'perkelompok' && $request->hasFile('file_pdf')) {
+            $pdf = $request->file('file_pdf');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdfPath = $pdf->storeAs('public/pdf', $pdfName);
+            $validatedData['file_pdf'] = $pdfPath;
+        }
         // dd($request->foto_tamu);
     
         // Store image foto indentitas
-        if ($request->has('foto_identitas')) {
-            $image_parts = explode(";base64,", $request->input('foto_identitas'));
-            $image_base64 = base64_decode($image_parts[1]);
-            $imageName = uniqid() . '.png';
-            $filePath = 'public/foto_identitas/' . $imageName;
-            Storage::put($filePath, $image_base64);
+        // if ($request->has('foto_identitas')) {
+        //     $image_parts = explode(";base64,", $request->input('foto_identitas'));
+        //     $image_base64 = base64_decode($image_parts[1]);
+        //     $imageName = uniqid() . '.png';
+        //     $filePath = 'public/foto_identitas/' . $imageName;
+        //     Storage::put($filePath, $image_base64);
             
-            // Update the path in the validated data
-            $validatedData['foto_identitas'] = $filePath;
-        }
+        //     // Update the path in the validated data
+        //     $validatedData['foto_identitas'] = $filePath;
+        // }
 
-        // Store image foto_tamu
-        if ($request->has('foto_tamu')) {
-            $image_parts = explode(";base64,", $request->input('foto_tamu'));
-            $image_base64 = base64_decode($image_parts[1]);
-            $imageName = uniqid() . '.png';
-            $filePath = 'public/foto_tamu/' . $imageName;
-            Storage::put($filePath, $image_base64);
+        // // Store image foto_tamu
+        // if ($request->has('foto_tamu')) {
+        //     $image_parts = explode(";base64,", $request->input('foto_tamu'));
+        //     $image_base64 = base64_decode($image_parts[1]);
+        //     $imageName = uniqid() . '.png';
+        //     $filePath = 'public/foto_tamu/' . $imageName;
+        //     Storage::put($filePath, $image_base64);
             
-            // Update the path in the validated data
-            $validatedData['foto_tamu'] = $filePath;
-        }
+        //     // Update the path in the validated data
+        //     $validatedData['foto_tamu'] = $filePath;
+        // }
     
         // Create a new Tamu model instance and save the data
         $tamu = Tamu::create($validatedData);
@@ -113,25 +123,45 @@ class TamuController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'name_instansi' => 'required',
-            'pekerjaan_intansi' => 'required',
-            'tipe_tamu' => 'required',
-            'alamat' => 'required',
-            'pertemuan' => 'required',
-            'keperluan' => 'required',
-            'jam_masuk' => 'required',
-            'jam_keluar' => 'nullable',
-            'identitas' => 'required',
+            'name' => 'required|string|max:255',
+            'name_instansi' => 'required|string|max:255',
+            'pekerjaan_intansi' => 'required|string|max:255',
+            'tipe_tamu' => 'required|in:penting,biasa,perkelompok,perorangan',
+            'alamat' => 'required|string|max:255',
+            'pertemuan' => 'required|string|max:255',
+            'keperluan' => 'required|string|max:255',
+            'jam_masuk' => 'required|date_format:H:i',
+            'jam_keluar' => 'nullable|date_format:H:i',
+            'identitas' => 'required|string|max:255',
+            'file_pdf' => 'nullable|mimes:pdf|max:2048', // Validasi file PDF
         ]);
-
+    
         $tamu = Tamu::findOrFail($id);
-        $tamu->update($request->all());
-
-        alert()->success('Succsess', 'Data tamu telah berhasil diupdate');
+    
+        // Handle file PDF upload if tipe_tamu is perkelompok
+        if ($request->input('tipe_tamu') == 'perkelompok' && $request->hasFile('file_pdf')) {
+            // Hapus file PDF lama jika ada
+            if ($tamu->file_pdf) {
+                Storage::delete($tamu->file_pdf);
+            }
+            $pdf = $request->file('file_pdf');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdfPath = $pdf->storeAs('public/pdf', $pdfName);
+            $validatedData['file_pdf'] = $pdfPath;
+        } elseif ($request->input('tipe_tamu') == 'perorangan') {
+            // Hapus file PDF jika tipe_tamu diubah menjadi perorangan
+            if ($tamu->file_pdf) {
+                Storage::delete($tamu->file_pdf);
+                $validatedData['file_pdf'] = null;
+            }
+        }
+    
+        $tamu->update($validatedData);
+    
+        alert()->success('Success', 'Data tamu telah berhasil diupdate');
         return redirect()->route('tamu.index')->with('success', 'Data Tamu berhasil diperbarui.');
     }
-
+    
     public function destroy($id)
     {
         $data = Tamu::findOrFail($id);

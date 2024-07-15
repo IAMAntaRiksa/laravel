@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('name_instansi');
             $table->string('pekerjaan_intansi');
-            $table->enum('tipe_tamu', ['penting', 'biasa']);
+            $table->enum('tipe_tamu', ['perkelompok', 'perorangan']); 
             $table->string('alamat');
             $table->string('pertemuan');
             $table->string('keperluan');
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('status_keluar')->default('aktif');
             $table->string('foto_identitas')->nullable();
             $table->string('foto_tamu')->nullable();
+            $table->string('file_pdf')->nullable();
             $table->timestamps();
         });
     }

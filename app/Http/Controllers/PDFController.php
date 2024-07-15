@@ -8,26 +8,26 @@ use Dompdf\Dompdf;
 
 class PDFController extends Controller
 {
-    public function exportPDF()
-    {
-        $data = Tamu::all(); // Ganti dengan model yang sesuai dan atur impor model di atas
+    // public function exportPDF()
+    // {
+    //     $data = Tamu::all(); // Ganti dengan model yang sesuai dan atur impor model di atas
 
-        // Render PDF
-        $pdf = new Dompdf();
-        $pdf->loadHtml(view('pages.rekap.pdf', compact('data')));
-        $pdf->setPaper('A4', 'landscape');
-        $pdf->render();
+    //     // Render PDF
+    //     $pdf = new Dompdf();
+    //     $pdf->loadHtml(view('pages.rekap.pdf', compact('data')));
+    //     $pdf->setPaper('A4', 'landscape');
+    //     $pdf->render();
     
-        // Generate file name
-        $fileName = 'data.pdf';
+    //     // Generate file name
+    //     $fileName = 'data.pdf';
     
-        // Set response headers
-        $headers = [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
-        ];
+    //     // Set response headers
+    //     $headers = [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+    //     ];
     
-        // Output the generated PDF to the browser
-        return response($pdf->output(), 200, $headers);
-    }
+    //     // Output the generated PDF to the browser
+    //     return response($pdf->output(), 200, $headers);
+    // }
 }
